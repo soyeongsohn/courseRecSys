@@ -25,7 +25,7 @@ def get_review_id():
     get_cookies()
     
     review_id = []
-    df = pd.read_pickle('course_total.pkl')
+    df = pd.read_pickle('./data/course_total.pkl')
     
     for i in range(len(df)):
         headers = {
@@ -39,9 +39,8 @@ def get_review_id():
         dom = BeautifulSoup(resp.text, 'lxml')
         pname = re.findall(r'professor_name="(.+?)"', str(dom))
         rid = re.findall(r' id="([0-9]+?)"', str(dom))
-        for _ in range(len(df['교수명'][i])):
-            if df['교수명'][i][_] in pname:
-                review_id.append(rid[pname.index(df['교수명'][i][_])])
+        if df['교수명'][i] in pname:
+            review_id.append(rid[pname.index(df['교수명'][i])])
     
     return review_id
 
@@ -91,5 +90,5 @@ def get_review(review_id):
 if __name__ == "__main__":
     review_id = get_review_id()
     review = get_review(review_id)
-    review.to_pickle('review.pkl')
+    review.to_pickle('./data/review.pkl')
 
