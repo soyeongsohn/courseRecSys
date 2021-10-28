@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome, ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
 import re
 from time import sleep
 
@@ -10,7 +11,7 @@ def get_driver():
         'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
     options.add_argument("--incognito")
     options.add_argument("headless")
-    driver = Chrome(options=options)
+    driver = Chrome(ChromeDriverManager().install(), options=options)
     return driver
 
 
