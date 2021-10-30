@@ -55,7 +55,7 @@ def get_details(data_id):
     
     # 새로 추가할 열 추가
     global course
-    course = course.reindex(columns = course.columns.tolist() + ['교과목해설', '교수명', '학문분야_대분류', '과목대체코드'])
+    course = course.reindex(columns = course.columns.tolist() + ['교과목해설', '교수명', '학문분야', '과목대체코드'])
     for i in range(len(data_id)):
 
         driver.get(f'https://bulletins.konkuk.ac.kr/ko-KR/department/LIBERAL_ARTS/searchresultpage1/?id={data_id[i]}')
@@ -84,7 +84,7 @@ def get_details(data_id):
         fields = dom.select('#sub_part > div > div.view-grid > table > tbody > tr > td')
         l = list(set([_.attrs['aria-label'] for _ in fields if _.attrs['data-th'] == '학문분야(대)']))
 
-        course.loc[i, '학문분야_대분류'] = (', ').join(l)
+        course.loc[i, '학문분야'] = (', ').join(l)
 
 def main(year):
     global course
