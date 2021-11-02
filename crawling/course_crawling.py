@@ -95,7 +95,7 @@ def get_details(data_id):
         course.loc[i, 'field(L)'] = (', ').join(l)
 
 
-def db_conn():
+def db_conn(db_info):
     database_username = db_info['user']
     database_password = db_info['password']
     database_ip = db_info['host']
@@ -107,7 +107,7 @@ def db_conn():
     return database_connection
 
 
-def load_to_db(filename):
+def load_to_db(year):
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
