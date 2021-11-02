@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import pymysql
 import sqlalchemy
+import json
 
 
 def get_driver():
@@ -95,10 +96,10 @@ def get_details(data_id):
 
 
 def db_conn():
-    database_username = 'uwername'
-    database_password = 'password'
-    database_ip = 'ipaddress'
-    database_name = 'dbname'
+    database_username = db_info['user']
+    database_password = db_info['password']
+    database_ip = db_info['host']
+    database_name = db_info['db']
     database_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.
                                                    format(database_username, database_password,
                                                           database_ip, database_name))
@@ -107,7 +108,7 @@ def db_conn():
 
 
 def load_to_db(filename):
-    conn = pymysql.connect(host='ipaddress', user='username', password='password', db='dbname')
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
     drop_sql = f"""drop table if exists course_{year}; """
@@ -116,7 +117,6 @@ def load_to_db(filename):
 
     database_connection = db_conn()
 
-    # 학수번호가 primary key로 지정될 예정
     course.to_sql(con=database_connection, name=f'course_{year}', if_exists='replace', index=False,
                   dtype={'courseno': sqlalchemy.sql.sqltypes.CHAR(9), 'credit': sqlalchemy.types.INTEGER(),
                          'domain': sqlalchemy.sql.sqltypes.VARCHAR(12)})
@@ -132,18 +132,18 @@ def load_to_db(filename):
 
 def get_data(year):
     global course
-    global driver
     driver = get_driver()
     data_id = get_course(year)
     get_details(data_id)
     course.drop(['eng_title', 'div', 'grade', 'hours', 'dept', 'field', 'eng_field'], axis=1, inplace=True)
     course.rename(columns={'field(L)': 'field'}, inplace=True)
     load_to_db(year)
-    course.to_pickle(f"./data/course_{year}.pkl") # save backup just in case
+    # save backup just in case
+    course.to_pickle(f"./data/course_{year}.pkl")
 
 
 def data_join():
-    conn = pymysql.connect(host='ipaddress', user='username', password='password', db='dbname')
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
     sql = """SELECT * from course_2019"""
     course_2019 = pd.read_sql(sql, conn)
@@ -172,10 +172,12 @@ def data_join():
 
     curs.close()
     conn.close()
-    course.to_pickle('./data/course_total.pkl')  # save backup just in case
+    course.to_pickle('./data/course_total.pkl')  # save back up just in case
 
 
 if __name__ == "__main__":
+    with open("db_private.json") as f:
+        db_info = json.load(f)
     years = [2019, 2020, 2021]
     for year in years:
         get_data(year)
