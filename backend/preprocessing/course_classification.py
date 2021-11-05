@@ -5,7 +5,7 @@ import fasttext
 import json
 import pymysql
 import sqlalchemy
-from connection import db_conn
+from backend.db.connection import db_conn
 
 
 def get_df():
