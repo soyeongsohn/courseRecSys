@@ -126,6 +126,9 @@ def get_data(year):
     data_id = get_course(year)
     get_details(data_id)
     course.drop(['eng_title', 'div', 'grade', 'hours', 'dept', 'field', 'eng_field'], axis=1, inplace=True)
+    to_drop = [i for i in range(len(course)) if re.sub(r'[^\w]', '',course['description'][i]).encode().isalpha()]  # 영문 description (외국인 대상 과목) 제거
+    course.drop(to_drop, axis=0, inplace=True)
+    course.reset_index(drop=True, inplace=True)
     course.rename(columns={'field(L)': 'field'}, inplace=True)
     load_to_db(year)
     # save backup just in case
@@ -159,6 +162,8 @@ def data_join():
     sql = """alter table course_total add PRIMARY KEY (courseno, profname);"""
     curs.execute(sql)
     conn.commit()
+
+    course.to_pickle('./data/course_total.pkl')  # save back up just in case
 
     curs.close()
     conn.close()
