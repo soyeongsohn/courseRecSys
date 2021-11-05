@@ -6,7 +6,7 @@ import pymysql
 import sqlalchemy
 import pandas as pd
 import json
-from course_crawling import db_conn
+from backend.db.connection import db_conn
 
 def get_df():
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
@@ -18,7 +18,7 @@ def get_df():
 
 def get_cookies():
     with open("cookies.txt", 'r', encoding="utf-8") as f:
-        lines = = f.readlines()
+        lines = f.readlines()
     str_ = (' ').join(lines).split()
 
     et = str_.split()
@@ -104,11 +104,7 @@ def get_review(review_id):
 
     return review
 
-
-def load_to_db(filename):
-    with open("db_private.json") as f:
-        db_info = json.load(f)
-
+def load_to_db(df, filename):
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
@@ -117,15 +113,16 @@ def load_to_db(filename):
     conn.commit()
 
     database_connection = db_conn(db_info)
-    review_id = get_review_id()
-    review = get_review(review_id)
-    review.to_sql(con=database_connection, name=filename, if_exists='replace')
-    # primary key를 해줄 수 있는 열이 따로 없기 때문에 index를 넣어줌, dtype은 우선 따로 지정하지 않음.
+    df.to_sql(con=database_connection, name=filename, if_exists='replace')
 
     curs.close()
     conn.close()
-    review.to_pickle('./data/review.pkl') # backup just in case
+    df.to_pickle(f'./data/{filename}.pkl') # backup just in case
 
 if __name__ == "__main__":
-    load_to_db('review')
+    with open("db_private.json") as f:
+        db_info = json.load(f)
+    review_id = get_review_id()
+    df = get_review(review_id)
+    load_to_db(df, 'review')
 

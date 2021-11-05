@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome, ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
 import re
 from time import sleep
 import pandas as pd
@@ -7,6 +8,7 @@ import numpy as np
 import pymysql
 import sqlalchemy
 import json
+from backend.db.connection import db_conn
 
 
 def get_driver():
@@ -95,19 +97,7 @@ def get_details(data_id):
         course.loc[i, 'field(L)'] = (', ').join(l)
 
 
-def db_conn(db_info):
-    database_username = db_info['user']
-    database_password = db_info['password']
-    database_ip = db_info['host']
-    database_name = db_info['db']
-    database_connection = sqlalchemy.create_engine('mysql+pymysql://{0}:{1}@{2}/{3}'.
-                                                   format(database_username, database_password,
-                                                          database_ip, database_name))
-
-    return database_connection
-
-
-def load_to_db(year):
+def load_to_db(filename):
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
@@ -115,7 +105,7 @@ def load_to_db(year):
     curs.execute(drop_sql)
     conn.commit()
 
-    database_connection = db_conn()
+    database_connection = db_conn(db_info)
 
     course.to_sql(con=database_connection, name=f'course_{year}', if_exists='replace', index=False,
                   dtype={'courseno': sqlalchemy.sql.sqltypes.CHAR(9), 'credit': sqlalchemy.types.INTEGER(),
@@ -161,18 +151,17 @@ def data_join():
     course = course.assign(profname=course['profname'].str.split(',')).explode('profname').reset_index(drop=True)
     course.drop_duplicates(subset=['courseno', 'profname'], inplace=True)
     course.reset_index(drop=True, inplace=True)
-    database_connection = db_conn()
-    course.to_sql(con=database_connection, name=f'course_total', if_exists='replace', index=False,
+    database_connection = db_conn(db_info)
+    course.to_sql(con=database_connection, name='course_total', if_exists='replace', index=False,
                   dtype={'courseno': sqlalchemy.sql.sqltypes.CHAR(9), 'credit': sqlalchemy.types.INTEGER(),
                          'domain': sqlalchemy.sql.sqltypes.VARCHAR(12),
                          'profname': sqlalchemy.sql.sqltypes.VARCHAR(10)})
-    sql = f"""alter table course_total add PRIMARY KEY (courseno, profname);"""
+    sql = """alter table course_total add PRIMARY KEY (courseno, profname);"""
     curs.execute(sql)
     conn.commit()
 
     curs.close()
     conn.close()
-    course.to_pickle('./data/course_total.pkl')  # save back up just in case
 
 
 if __name__ == "__main__":
