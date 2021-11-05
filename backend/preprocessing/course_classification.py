@@ -31,7 +31,7 @@ def preproc(df):
     return df
 
 
-def model(df, n=2, epoch=600):
+def model(df, n=2, epoch=1500):
     # df를 학문분야_대분류 유무로 train/test로 나눈 후 FastText를 이용해 분류하기
     train = df.loc[df['field'] != "", ['description', 'field']]
     test = df.loc[df['field'] == "", ['description', 'field']]
@@ -70,7 +70,7 @@ def course_classify(df):
 
     df = model(df)  # bi-gram
 
-    df = model(df, n=1, epoch=100)  # uni-gram
+    df = model(df, n=1, epoch=300)  # uni-gram
 
     return df
 
