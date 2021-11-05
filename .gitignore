@@ -1,7 +1,7 @@
-db_private.json
+*.json
 
-chromedriver.exe
+*.exe
 
-cookies.txt
+*.txt
 
-/data
+data/
