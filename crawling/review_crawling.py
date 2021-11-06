@@ -6,22 +6,14 @@ import pymysql
 import sqlalchemy
 import pandas as pd
 import json
-from backend.db.connection import db_conn
-
-def get_df():
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
-    sql = """SELECT * from course_total"""
-    df = pd.read_sql(sql, conn)
-    conn.close()
-    return df
+from db.connection import db_conn, get_df
 
 
 def get_cookies():
-    with open("cookies.txt", 'r', encoding="utf-8") as f:
+    with open("../cookies.txt", 'r', encoding="utf-8") as f:
         lines = f.readlines()
-    str_ = (' ').join(lines).split()
+    et = (' ').join(lines).split()
 
-    et = str_.split()
     session.cookies.clear()
 
     s = 0
@@ -39,7 +31,7 @@ def get_review_id():
     get_cookies()
 
     review_id = []
-    df = get_df()
+    df = get_df('course_total')
 
     for i in range(len(df)):
         headers = {
@@ -55,7 +47,7 @@ def get_review_id():
         rid = re.findall(r' id="([0-9]+?)"', str(dom))
         if df['profname'][i] in pname:
             review_id.append(rid[pname.index(df['profname'][i])])
-
+  
     return review_id
 
 
@@ -98,13 +90,15 @@ def get_review(review_id):
             row['like'] = posv[i]
             row['dislike'] = negv[i]
             row['review'] = reviews[i]
-
             # 데이터프레임에 데이터 추가
             review = review.append(row, ignore_index=True)
 
     return review
 
+
 def load_to_db(df, filename):
+    with open("../db_private.json") as f:
+        db_info = json.load(f)
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
@@ -119,10 +113,8 @@ def load_to_db(df, filename):
     conn.close()
     df.to_pickle(f'./data/{filename}.pkl') # backup just in case
 
+
 if __name__ == "__main__":
-    with open("db_private.json") as f:
-        db_info = json.load(f)
     review_id = get_review_id()
     df = get_review(review_id)
     load_to_db(df, 'review')
-

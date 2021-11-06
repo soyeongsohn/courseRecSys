@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 from time import sleep
@@ -7,8 +10,10 @@ import pandas as pd
 import numpy as np
 import pymysql
 import sqlalchemy
+from pathlib import Path
+from os import path
 import json
-from backend.db.connection import db_conn
+from db.connection import db_conn
 
 
 def get_driver():
@@ -19,12 +24,13 @@ def get_driver():
     options.add_argument("headless")
     global driver
     driver = Chrome(ChromeDriverManager().install(), options=options)
+    return driver
 
 
 def get_course(year):
     global course
     global driver
-
+    driver = get_driver()
     driver.get('https://bulletins.konkuk.ac.kr/ko-KR/CultureSearch/Culture/Advanced_Culture/')
     driver.find_element_by_xpath(f'/html/body/div[4]/div/div/div/div/div[2]/a[2]').click()
     driver.find_element_by_xpath(f'/html/body/div[4]/div/div/div/div/div[2]/a[3]').click()
@@ -38,10 +44,9 @@ def get_course(year):
     courses = []
     data_id = []  # 추후 과목 세부 정보 페이지 이동하기 위함
     while True:
-        sleep(5)
-        # 다음 페이지로 이동
+        sleep(3) # 컴퓨팅 파워에 따라 달라질듯
+        WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "entitylist")))
         dom = BeautifulSoup(driver.page_source, 'lxml')
-
         course = dom.select(
             f'body > div.container > div > div > div > div > div.col-md-12.columnBlockLayout > l.l{no} > div > div.entity-grid.entitylist > div.view-grid.has-pagination > table > tbody > tr')
         for i in course:
@@ -52,10 +57,9 @@ def get_course(year):
             if len(cols) - 1 > len(course_info):
                 course_info.extend([np.nan, np.nan])  # 학문분야가 공백인 경우 nan 값으로 채우기(한, 영 이므로 2개)
             courses.append(course_info)
-
-        if driver.find_elements_by_link_text('>')[no - 1].get_attribute('aria-disabled') == 'true':  # 마지막 페이지에 도달한 경우
+        if driver.find_elements_by_link_text('>')[no-1].get_attribute('aria-disabled') == 'true':  # 마지막 페이지에 도달한 경우
             break
-        driver.find_elements_by_link_text('>')[no - 1].click()
+        driver.find_elements_by_link_text('>')[no-1].click()
 
     course = pd.DataFrame(courses, columns=['title', 'eng_title', 'semester', 'courseno', 'div', 'grade',
                                             'credit', 'hours', 'dept', 'domain', 'field', 'eng_field'])
@@ -97,7 +101,7 @@ def get_details(data_id):
         course.loc[i, 'field(L)'] = (', ').join(l)
 
 
-def load_to_db(filename):
+def load_to_db(year):
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
@@ -122,7 +126,7 @@ def load_to_db(filename):
 
 def get_data(year):
     global course
-    driver = get_driver()
+    # driver = get_driver()
     data_id = get_course(year)
     get_details(data_id)
     course.drop(['eng_title', 'div', 'grade', 'hours', 'dept', 'field', 'eng_field'], axis=1, inplace=True)
@@ -132,7 +136,8 @@ def get_data(year):
     course.rename(columns={'field(L)': 'field'}, inplace=True)
     load_to_db(year)
     # save backup just in case
-    course.to_pickle(f"./data/course_{year}.pkl")
+    fliepath = Path(__file__).parent
+    course.to_pickle(path.join(fliepath, 'data',f"course_{year}.pkl"))
 
 
 def data_join():
@@ -163,14 +168,15 @@ def data_join():
     curs.execute(sql)
     conn.commit()
 
-    course.to_pickle('./data/course_total.pkl')  # save back up just in case
+    fliepath = Path(__file__).parent
+    course.to_pickle(path.join(fliepath, 'data', 'course_total.pkl'))  # save back up just in case
 
     curs.close()
     conn.close()
 
 
 if __name__ == "__main__":
-    with open("db_private.json") as f:
+    with open("../db_private.json") as f:
         db_info = json.load(f)
     years = [2019, 2020, 2021]
     for year in years:
