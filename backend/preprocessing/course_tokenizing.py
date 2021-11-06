@@ -6,18 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pymysql
 import json
 import pickle
-
-
-def get_df():
-    with open("../../db_private.json") as f:
-        db_info = json.load(f)
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
-    sql = "SELECT * from course_fillna"
-    df = pd.read_sql(sql, conn)
-    df.credit = df.credit.astype(str)  # 전처리 용이하게 하기 위해 int인 열 str로 변경
-    conn.close()
-    return df
-
+from db.connection import get_df
 
 def tokenizing(data):
     mecab = Mecab()
@@ -37,7 +26,7 @@ def tokenizing(data):
 
 def vectorized():
     # 데이터프레임 불러오기
-    df = get_df()
+    df = get_df('course_fillna')
 
     # tokenizing
     token = tokenizing(df['description'])

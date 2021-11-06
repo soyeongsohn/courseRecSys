@@ -1,20 +1,12 @@
 import pandas as pd
 import re
-from konlpy.tag import Okt
 import fasttext
 import json
 import pymysql
 import sqlalchemy
-from backend.db.connection import db_conn
-
-
-def get_df():
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
-    sql = "SELECT * from course_total"
-    df = pd.read_sql(sql, conn)
-    df.credit = df.credit.astype(str)  # 전처리 용이하게 하기 위해 int인 열 str로 변경
-    conn.close()
-    return df
+from pathlib import Path
+import os
+from db.connection import db_conn, get_df
 
 
 def preproc(df):
@@ -63,7 +55,7 @@ def model(df, n=2, epoch=1500):
 
 def course_classify():
     # load data
-    df = get_df()
+    df = get_df('course_total')
     # text preprocessing
     df = preproc(df)
 
@@ -79,6 +71,9 @@ def course_classify():
 
 
 def load_to_db():
+    dirpath = Path(__file__).parent.parent.parent
+    with open(os.path.join(dirpath, "db_private.json")) as f:
+        db_info = json.load(f)
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
     database_connection = db_conn(db_info)
@@ -96,8 +91,7 @@ def load_to_db():
     curs.close()
     conn.close()
 
+
 if __name__ == "__main__":
-    with open("db_private.json") as f:
-        db_info = json.load(f)
-    df = course_classify(df)
+    df = course_classify()
     load_to_db()
