@@ -22,12 +22,14 @@ def preproc(df):
     텍스트 전처리 함수
     df: 과목 정보 데이터 프레임
     """
-    df = df.applymap(lambda x: re.sub(r'^\s[a-zA-Z가-힣]', '', x))  # 문장 시작이 공백인 경우 공백 삭제
-    df = df.applymap(lambda x: re.sub(r'([.,?!])(\w)', '\g<1> \g<2>', x))  # 구두점 뒤에 문자가 있으면 공백 추가 -> .단어 => . 단어
-    df = df.applymap(
+    df.description = df.description.apply(lambda x: re.sub(r'^\s[a-zA-Z가-힣]', '', x))  # 문장 시작이 공백인 경우 공백 삭제
+    df.description = df.description.apply(
+        lambda x: re.sub(r'([.,?!])(\w)', '\g<1> \g<2>', x))  # 구두점 뒤에 문자가 있으면 공백 추가 -> .단어 => . 단어
+    df.description = df.description.apply(
         lambda x: re.sub(r'[^\s\da-zA-Z가-힣.,?!:\'\"]', ' ', x))  # 공백, 한영, 숫자, 구두점을 제외한 나머지 글자 삭제 -> 특수문자 제거
-    df = df.applymap(lambda x: re.sub(r'\s{2,}', '\n', x).strip())  # 공백이 2개 이상 반복되는 경우 하나만 남김 + strip -> 양쪽 공백 제거
-    df = df.applymap(lambda x: x.replace('\n', ' '))  # 문장 중간 개행문자 제거
+    df.description = df.description.apply(
+        lambda x: re.sub(r'\s{2,}', '\n', x).strip())  # 공백이 2개 이상 반복되는 경우 하나만 남김 + strip -> 양쪽 공백 제거
+    df.description = df.description.apply(lambda x: x.replace('\n', ' '))  # 문장 중간 개행문자 제거
     return df
 
 
@@ -59,7 +61,7 @@ def model(df, n=2, epoch=1500):
     return df
 
 
-def course_classify(df):
+def course_classify():
     # load data
     df = get_df()
     # text preprocessing
@@ -70,7 +72,8 @@ def course_classify(df):
 
     df = model(df)  # bi-gram
 
-    df = model(df, n=1, epoch=300)  # uni-gram
+    # 남아있는 결측치 (1개) 채우기
+    df.loc[df.field == '', 'field'] = '사회과학'  # 명화를통한인간의이해
 
     return df
 
