@@ -1,12 +1,10 @@
-import pandas as pd
 import re
 from konlpy.tag import Mecab
 from gensim import models
 from sklearn.metrics.pairwise import cosine_similarity
-import pymysql
-import json
 import pickle
-from db.connection import get_df
+from db.db_connection.connection import get_df
+
 
 def tokenizing(data):
     mecab = Mecab()

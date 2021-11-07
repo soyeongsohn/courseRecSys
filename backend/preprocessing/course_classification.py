@@ -1,4 +1,3 @@
-import pandas as pd
 import re
 import fasttext
 import json
@@ -6,7 +5,7 @@ import pymysql
 import sqlalchemy
 from pathlib import Path
 import os
-from db.connection import db_conn, get_df
+from db.db_connection.connection import db_conn, get_df
 
 
 def preproc(df):
@@ -74,7 +73,7 @@ def load_to_db():
     dirpath = Path(__file__).parent.parent.parent
     with open(os.path.join(dirpath, "db_private.json")) as f:
         db_info = json.load(f)
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
     database_connection = db_conn(db_info)
     df.to_sql(con=database_connection, name='course_fillna', if_exists='replace', index=False,

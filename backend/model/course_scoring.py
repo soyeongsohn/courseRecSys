@@ -3,7 +3,7 @@ import pandas as pd
 import pickle
 from pathlib import Path
 import os
-from db.connection import get_df
+from db.db_connection.connection import get_df
 
 # 두 함수에 모두 사용되기 때문에 전역 변수로 설정
 df = get_df('course_fillna')
@@ -41,5 +41,7 @@ def add_sim(title_list):
     sim_norm = np.round(sim_norm, 4)
     sim_norm = list(enumerate(sim_norm))
     return sim_norm
+
+
 
 
