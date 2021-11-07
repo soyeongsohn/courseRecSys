@@ -5,6 +5,7 @@ import pandas as pd
 import pymysql
 import os
 
+
 def db_conn(db_info):
     database_username = db_info['user']
     database_password = db_info['password']
@@ -18,8 +19,7 @@ def db_conn(db_info):
 
 
 def get_df(tablename):
-    global n
-    dirpath = Path(__file__).parent.parent.parent
+    dirpath = Path(__file__).parent.parent.parent.parent
     with open(os.path.join(dirpath, "db_private.json")) as f:
         db_info = json.load(f)
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
