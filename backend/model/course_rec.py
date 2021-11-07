@@ -7,19 +7,24 @@ def top_n(n=10):
     df = get_df('course_fillna')
     sugang_info = get_sugang_info()
     title_list = list(sugang_info['title'])
-    course_sim = sorted(add_sim(title_list), key=lambda x: x[1], reverse=True)
+    grade_list = list(sugang_info['grade'])
+    course_sim = sorted(add_sim(title_list, grade_list), key=lambda x: x[1], reverse=True)
     rank_idx = [i[0] for i in course_sim]
     course_2021 = get_df('course_2021')
     title_2021 = list(course_2021['title'])
     profname_2021 = list(course_2021['profname'])
 
+    ignore = list(df.loc[df.title.isin(title_list)].index)
+    ig_subcode = list(df.loc[df.title.isin(title_list), 'subcode'])
+    ig_subcode = list((filter(lambda x: x != '', ig_subcode)))
+
     cnt = 0
     top_idx = []
     for i in rank_idx:
-        ignore = []
-        if (df['subcode'][i] in list(course_2021['subcode'])) and (df['title'][i] not in title_2021):
-            ignore.append(df['title'][i])
-            ignore.append(course_2021.loc[course_2021.subcode == df['subcode'][i], 'title'].values[0])
+        if i in ignore:
+            continue
+        if df['subcode'][i] in ig_subcode:
+            continue
 
         if df['title'][i] in ignore:
             continue
@@ -35,3 +40,7 @@ def top_n(n=10):
     recommend['similarity'] = [i[1] for i in course_sim if i[0] in top_idx]
 
     return recommend
+
+
+if __name__ == "__main__":
+    print(top_n())
