@@ -112,7 +112,7 @@ def to_df(data):
 
 
 def load_to_db(data):
-    dirpath = Path(__file__).parent.parent
+    dirpath = Path(__file__).parent.parent.parent
     with open(os.path.join(dirpath, "db_private.json")) as f:
         db_info = json.load(f)
 
