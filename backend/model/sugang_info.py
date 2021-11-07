@@ -136,4 +136,4 @@ def get_sugang_info():
     df = to_df(data)
     load_to_db(data)
 
-    return df[['title', 'courseno', 'grade']] # 추천모델에서 사용할 열만 리턴
+    return df[['title', 'grade']] # 추천모델에서 사용하는 열만 리턴
