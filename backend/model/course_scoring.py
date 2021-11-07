@@ -30,10 +30,10 @@ def cal_sim_score(title):
     return sim_scores
 
 
-def add_sim(title_list):
+def add_sim(title_list, grade_list):
     sim_total = np.zeros(len(df), )
-    for i in title_list:
-        sim_total += cal_sim_score(i)
+    for i in range(len(title_list)):
+        sim_total += cal_sim_score(title_list[i]) * grade_list[i]
 
     # 정규화
     sim_norm = sim_total / len(title_list)
