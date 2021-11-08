@@ -51,15 +51,17 @@ def login():
             driver.switch_to.window(driver.window_handles[1])
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
+            return True
             break
         else:
-            print("로그인 실패")
+            print("로그인 실패", f"({i+1}/5)")
             driver.quit()
 
     if i == 4:
         print('로그인을 5회 실패하였습니다. 포털에서 아이디 또는 비밀번호를 찾은 후 이용해주세요')
         raise LoginFailedError("Please restart after finding your login info")
         driver.quit()
+        return False
 
 
 def grade_converter(grade): # 학점을 숫자로 변환
@@ -131,9 +133,8 @@ def load_to_db(data):
 
 
 def get_sugang_info():
-    login()
     data = get_data()
     df = to_df(data)
-    load_to_db(data)
+    # load_to_db(data)
 
     return df[['title', 'grade']] # 추천모델에서 사용하는 열만 리턴

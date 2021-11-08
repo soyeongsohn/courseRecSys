@@ -1,5 +1,5 @@
 from db.db_connection.connection import get_df
-from model.sugang_info import get_sugang_info
+from model.sugang_info import get_sugang_info, login
 from model.course_scoring import add_sim
 
 
@@ -40,7 +40,3 @@ def top_n(n=10):
     recommend['similarity'] = [i[1] for i in course_sim if i[0] in top_idx]
 
     return recommend
-
-
-if __name__ == "__main__":
-    print(top_n())
