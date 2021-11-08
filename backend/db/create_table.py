@@ -7,7 +7,7 @@ dirpath = Path(__file__).parent.parent.parent
 with open(os.path.join(dirpath, "db_private.json")) as f:
     db_info = json.load(f)
 
-conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
+conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
 curs = conn.cursor(pymysql.cursors.DictCursor)
 
 drop_sql = "DROP TABLE IF EXISTS std_info"

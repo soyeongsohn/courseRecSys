@@ -99,7 +99,7 @@ def get_review(review_id):
 def load_to_db(df, filename):
     with open("../db_private.json") as f:
         db_info = json.load(f)
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
     drop_sql = f"""drop table if exists {filename}; """

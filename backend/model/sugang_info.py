@@ -117,7 +117,7 @@ def load_to_db(data):
         db_info = json.load(f)
 
 
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
 
     insert_sql = """INSERT INTO std_info (stdno, dept, title, courseno, grade)

@@ -141,7 +141,7 @@ def get_data(year):
 
 
 def data_join():
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db'])
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
     curs = conn.cursor(pymysql.cursors.DictCursor)
     sql = """SELECT * from course_2019"""
     course_2019 = pd.read_sql(sql, conn)
