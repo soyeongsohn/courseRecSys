@@ -8,10 +8,8 @@ import re
 from time import sleep
 import numpy as np
 import pandas as pd
-import pymysql
-import json
-from pathlib import Path
 import os
+from db.db_connection.connection import sql_conn
 
 
 class LoginFailedError(Exception):
@@ -114,15 +112,9 @@ def to_df(data):
 
 
 def load_to_db(data):
-    dirpath = Path(__file__).parent.parent.parent
-    with open(os.path.join(dirpath, "db_private.json")) as f:
-        db_info = json.load(f)
+    conn, curs = sql_conn()
 
-
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
-    curs = conn.cursor(pymysql.cursors.DictCursor)
-
-    insert_sql = """INSERT INTO std_info (stdno, dept, title, courseno, grade)
+    insert_sql = """INSERT IGNORE INTO std_info (stdno, dept, title, courseno, grade)
                     VALUES (%s, %s, %s, %s, %s)"""
 
     curs.executemany(insert_sql, data)
@@ -135,6 +127,7 @@ def load_to_db(data):
 def get_sugang_info():
     data = get_data()
     df = to_df(data)
-    # load_to_db(data)
+    load_to_db(data)
 
     return df[['title', 'grade']] # 추천모델에서 사용하는 열만 리턴
+

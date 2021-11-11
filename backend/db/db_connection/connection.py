@@ -6,7 +6,23 @@ import pymysql
 import os
 
 
-def db_conn(db_info):
+def get_db_info():
+    dirpath = Path(__file__).parent.parent.parent.parent
+    with open(os.path.join(dirpath, "db_private.json")) as f:
+        db_info = json.load(f)
+
+    return db_info
+
+
+def sql_conn():
+    db_info = get_db_info()
+    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
+    curs = conn.cursor(pymysql.cursors.DictCursor)
+    return conn, curs
+
+
+def db_conn():
+    db_info = get_db_info()
     database_username = db_info['user']
     database_password = db_info['password']
     database_ip = db_info['host']
@@ -19,10 +35,7 @@ def db_conn(db_info):
 
 
 def get_df(tablename):
-    dirpath = Path(__file__).parent.parent.parent.parent
-    with open(os.path.join(dirpath, "db_private.json")) as f:
-        db_info = json.load(f)
-    conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
+    conn, _ = sql_conn()
     sql = f"SELECT * from {tablename}"
     df = pd.read_sql(sql, conn)
 
@@ -31,3 +44,4 @@ def get_df(tablename):
 
     conn.close()
     return df
+

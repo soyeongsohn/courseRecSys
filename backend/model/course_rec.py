@@ -1,5 +1,5 @@
 from db.db_connection.connection import get_df
-from model.sugang_info import get_sugang_info, login
+from model.sugang_info import get_sugang_info
 from model.course_scoring import add_sim
 
 
