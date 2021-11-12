@@ -7,7 +7,7 @@ import os
 
 
 def get_db_info():
-    dirpath = Path(__file__).parent.parent.parent.parent
+    dirpath = Path(__file__).parents[3]
     with open(os.path.join(dirpath, "db_private.json")) as f:
         db_info = json.load(f)
 

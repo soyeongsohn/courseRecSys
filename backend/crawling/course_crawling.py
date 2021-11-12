@@ -8,11 +8,9 @@ import re
 from time import sleep
 import pandas as pd
 import numpy as np
-import pymysql
 import sqlalchemy
 from pathlib import Path
 from os import path
-import json
 from db.db_connection.connection import db_conn, sql_conn
 
 

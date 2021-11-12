@@ -70,7 +70,7 @@ def course_classify():
 
 
 def load_to_db():
-    dirpath = Path(__file__).parent.parent.parent
+    dirpath = Path(__file__).parents[2]
     with open(os.path.join(dirpath, "db_private.json")) as f:
         db_info = json.load(f)
     conn = pymysql.connect(host=db_info['host'], user=db_info['user'], password=db_info['password'], db=db_info['db_connection'])
