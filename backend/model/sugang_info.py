@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
@@ -10,10 +11,6 @@ import numpy as np
 import pandas as pd
 import os
 from db.db_connection.connection import sql_conn
-
-
-class LoginFailedError(Exception):
-    pass
 
 
 def get_driver():
@@ -28,38 +25,27 @@ def get_driver():
 
 
 # 로그인
-def login():
-    for i in range(5):  # 5번 시도, 실패 시
-        driver = get_driver();
-        driver.get('https://kupis.konkuk.ac.kr/sugang/login/loginTop.jsp')
-        login_button = WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "form input[type=button]")))
-        user_id = input("아이디를 입력하세요: ")
-        pwd = input("비밀번호를 입력하세요: ")
-        driver.find_element_by_name('stdNo').clear()
-        driver.find_element_by_name('stdNo').send_keys(user_id)
-        driver.find_element_by_name('pwd').clear()
-        driver.find_element_by_name('pwd').send_keys(pwd)
-        login_button.click()
-        tmp = driver.window_handles[1]
-        sleep(0.5)
-        new_tab = driver.window_handles[1]
-        if new_tab != tmp:
-            driver.get('https://kupis.konkuk.ac.kr/sugang/login/mainBodyNew.jsp')
-            driver.switch_to.window(driver.window_handles[1])
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
-            return True
-            break
-        else:
-            print("로그인 실패", f"({i+1}/5)")
-            driver.quit()
-
-    if i == 4:
-        print('로그인을 5회 실패하였습니다. 포털에서 아이디 또는 비밀번호를 찾은 후 이용해주세요')
-        raise LoginFailedError("Please restart after finding your login info")
-        driver.quit()
+def login(username, password):
+    driver = get_driver()
+    driver.get('https://sugang.konkuk.ac.kr/')
+    WebDriverWait(driver, 5).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'Main')))
+    login_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#btn-login')))
+    driver.find_element_by_name("stdNo").clear()
+    driver.find_element_by_name("stdNo").send_keys(username)
+    driver.find_element_by_name("pwd").clear()
+    driver.find_element_by_name("pwd").send_keys(password)
+    login_button.click()
+    try:
+        alert = driver.switch_to.alert
+        alert.accept()
         return False
+    except NoAlertPresentException:
+        return True
+
+
+def logout():
+    driver.close()
+    return True
 
 
 def grade_converter(grade): # 학점을 숫자로 변환
@@ -88,21 +74,35 @@ def grade_converter(grade): # 학점을 숫자로 변환
 
 
 def get_data():
-    stdinfo = re.findall(r'<span>(20[0-9]{7}.+?)\n', str(driver.page_source))[0].split()  # 학번, 학과
-
-    driver.get('https://kupis.konkuk.ac.kr/sugang/acd/cour/aply/CourPersonPntInq.jsp')  # 취득학점 조회
-    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, 'table')))
+    WebDriverWait(driver, 5).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'coreMain')))
+    driver.execute_script("javascript:fnMenuLoad('/search?attribute=searchMain',this.id);")
+    menu = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#sTabs > li:nth-child(4)')))
+    menu.click()
     dom = BeautifulSoup(driver.page_source, 'lxml')
-    course_list = np.array(dom.findAll('table')[0].findAll('td'))
-    course_split = np.split(course_list, len(dom.findAll('table')[0].findAll('tr')) - 1)
+    table = dom.find_all("tr", role="row")
+    stdno = re.findall(r'<label>학번</label>\n<span>([0-9]+?)</span>', str(dom))[0]
+    dept = re.findall(r'소속</label>\n<span>([가-힣]+?)</span>', str(dom))[0]
     data = []
-    for i in range(len(course_split)):
-        if course_split[i][2][0] != "심교":
+    for i in range(len(table)):
+        try:
+            course = re.findall(
+                r'<td aria-describedby="gridRegisteredCredits_pobt_div_nm" role="gridcell" style="text-align:center;" title="([가-힣]{2})">',
+                str(table[i]))[0]
+            if course != '심교':
+                continue
+            else:
+                title = re.findall(
+                    r'<td aria-describedby="gridRegisteredCredits_cors_nm" role="gridcell" style="text-align:left;" title="([\w\W]+?)">',
+                    str(table[i]))[0]
+                courseno = re.findall(
+                    r'<td aria-describedby="gridRegisteredCredits_haksu_id" role="gridcell" style="text-align:center;" title="([\w\W]+?)">',
+                    str(table[i]))[0]
+                grade = re.findall(
+                    r'<td aria-describedby="gridRegisteredCredits_grd" role="gridcell" style="text-align:center;" title="([A-Z]\+?)">',
+                    str(table[i]))[0]
+        except Exception:
             continue
-        else:
-            data.append((stdinfo[0], stdinfo[1], course_split[i][4][0], course_split[i][3][0],
-                         grade_converter(course_split[i][-1][0])))
-
+        data.append((stdno, dept, title, courseno, grade_converter(grade)))
     return data
 
 
@@ -130,4 +130,3 @@ def get_sugang_info():
     load_to_db(data)
 
     return df[['title', 'grade']] # 추천모델에서 사용하는 열만 리턴
-
