@@ -1,13 +1,11 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import NoAlertPresentException, UnexpectedAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import re
-from time import sleep
-import numpy as np
 import pandas as pd
 import os
 from db.db_connection.connection import sql_conn
@@ -38,6 +36,8 @@ def login(username, password):
     try:
         alert = driver.switch_to.alert
         alert.accept()
+        return False
+    except UnexpectedAlertPresentException:
         return False
     except NoAlertPresentException:
         return True

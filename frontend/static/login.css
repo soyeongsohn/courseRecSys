@@ -58,7 +58,32 @@ body{
     color: #046B40;
     font-size: 12vh;
 }
-
+.form-group {
+    padding: 1vh;
+}
+.form-group span {
+    font-family: 'NanumSquare', sans-serif;
+    font-weight: 400;
+    font-size: 2.5vh;
+    
+}
+input {
+    width: 15vw;
+    height: 2.5vh;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+}
+.btn-primary {
+    font-family:'NanumSquareRound', sans-serif;
+    font-weight: 700;
+    font-size: 2.5vh;
+    width: 5vw;
+    height: 4vh;
+    margin-left: 0.5vw;
+    border-radius: 1vh;
+    border-color: #7F7F7F;
+    background-color: #F2F2F2;
+}
 .right-box {
     position: absolute;
     display: flex;
@@ -69,5 +94,18 @@ body{
     flex-direction: column;
     padding-bottom: 0.568vh;
     padding-right: 1.596vw;
-    margin-left: 50vw;
+    margin-left: 60vw;
+}
+.notice {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin-left: 43vw;
+    margin-top: 67vh;
+    font-size: 1.3vh;
+
+}
+.notice strong {
+    font-size: 2vh;
 }

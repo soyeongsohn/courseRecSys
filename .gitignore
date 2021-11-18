@@ -4,6 +4,8 @@
 
 cookies.txt
 
+secret_key.txt
+
 data/
 
 .idea/
