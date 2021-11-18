@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/innks/NanumSquareRound/master/nanumsquareround.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+    <link rel="stylesheet" href="../static/navbar.css">
+    <script src="https://kit.fontawesome.com/2ea64f6cbd.js" crossorigin="anonymous"></script>
+    <title>navbar</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar_logo">
+            <a href="{{ url_for('home') }}">
+                <img src="../static/logo.jpg">
+                <p>KU 심교 추천 서비스</p>
+            </a>
+        </div>
+        <div class="navbar_menu">
+            <a href="https://kupis.konkuk.ac.kr/sugang/acd/cour/time/SeoulTimetableInfo.jsp" target="_blank">종강시</a>
+            <a href="https://kuis.konkuk.ac.kr/index.do" target="_blank">종정시</a>
+            <a href="https://bulletins.konkuk.ac.kr/ko-KR/" target="_blank">요람</a>
+        </div>
+        <a href="#" class="navbar_toggleBtn">
+            <i class="fas fa-bars"></i>
+        </a>
+    </nav>
+</body>
+</html>

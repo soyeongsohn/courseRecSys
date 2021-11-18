@@ -1,0 +1,73 @@
+body{
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100vh;
+    margin-right: auto;
+    align-items: center;
+
+}
+
+.upper {
+    width: 80vw;
+    margin-left: 15vw;
+    height: 27vh;
+    border-bottom: 0.15vh solid #000000;
+    box-shadow: 0 1.7vh 1vh -1.3vh  #D3D3D3;
+}
+.upper p {
+    font-family: 'NanumSquare', sans-serif;
+    font-weight: 700;
+    color: #000000;
+    font-size: 1.5vw;
+    margin-top: 22vh;
+    margin-left: 0.5vw;
+}
+
+.left-box {
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    width: 40vw;
+    height: 100vh;
+    flex-direction: column;
+    padding-bottom: 0.568vh;
+    padding-left: 1.596vw;
+    margin-left: 10vw;
+    margin-right: 50vw;
+}
+.login-text {
+    font-size: 10vh;
+    font-weight: 900;
+    letter-spacing: -0.3vw;
+    line-height:70%;
+    color: #353535;
+    margin: 0;
+    padding: 0;
+}
+.login-text span {
+    color: #046B40;
+    font-size: 12vh;
+}
+
+.right-box {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 40vw;
+    height: 100vh;
+    flex-direction: column;
+    padding-bottom: 0.568vh;
+    padding-right: 1.596vw;
+    margin-left: 50vw;
+}

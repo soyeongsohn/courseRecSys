@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/innks/NanumSquareRound/master/nanumsquareround.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+    <link rel="stylesheet" href="../static/index.css">
+    <script src="https://kit.fontawesome.com/2ea64f6cbd.js" crossorigin="anonymous"></script>
+    <script src="../static/index.js"></script>
+    <title>home</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar_menu">
+            <a href="https://kupis.konkuk.ac.kr/sugang/acd/cour/time/SeoulTimetableInfo.jsp" target="_blank">종강시</a>
+            <a href="https://kuis.konkuk.ac.kr/index.do" target="_blank">종정시</a>
+            <a href="https://bulletins.konkuk.ac.kr/ko-KR/" target="_blank">요람</a>
+        </div>
+        <a href="#" class="navbar_toggleBtn">
+            <i class="fas fa-bars"></i>
+        </a>
+    </nav>
+    <div class="outerbox">
+        <div clas="innerbox">
+            <div class="textbox">
+                <h2>나에게 꼭 맞는 교양 강의만 수강하자</h2>
+                <h1>KU 심화 교양 추천 서비스</h1>
+            </div>
+            <div class="goBtn" style="cursor:pointer" onclick="window.location.href={{ url_for('do_login') }};">
+                <a href="{{ url_for('do_login') }}">바로 가기</a>
+            </div>
+    </div>
+    </div>
+    <footer class="footer">
+        <div class="leftbox footer-text">
+            <p>Copyright ⓒ KONKUK UNIVERSITY KUGGLE</p>
+            <p>All Rights Reserved.</p>
+            <p>Head Developer E-mail: soyeong2@konkuk.ac.kr</p>
+        </div>
+        <div class="rightbox">
+            <div class="right-inner footer-text">
+                <p>&lt; Kuggle 4th Team 4 &gt;</p>
+                <p>&emsp;Soyeong Sohn</p>
+                <p>&emsp;Eunseo Choi</p>
+                <p>&emsp;Dahye Shin</p>
+        </div>
+        </div>
+    </footer>
+</body>
+</html>

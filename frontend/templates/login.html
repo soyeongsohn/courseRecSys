@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/login.css">
+    <title>login</title>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="container">
+        <div class="upper">
+            <p>로그인</p>
+        </div>
+
+        <div class="left-box">
+            <p class="login-text">MEMBER </br>
+            <span>&ensp;&ensp;LOGIN</span></p>
+        </div>
+        <div class="right-box">
+            <p>학우님의 포털 아이디와 비밀번호를 정확히 입력하세요</p>
+            <div class="form-group">
+            <form action="http://127.0.0.1:5000/login" method="post" class="post-form">
+                <span>아이디</span>
+                 {{form.csrf_token}}
+                <input type="text" name="username" id="username"
+                value="{{ form.username.data or '' }}">
+            </div>
+            <div class="form-group">
+                <span>비밀번호</span>
+                <input type="password" name="password" id="password"
+                value="{{ form.password.data or '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">로그인</button>
+            </form>
+        </div>
+        <p>추천모델의 향상을 위해 학우님의 수강내역이 수집됨을 알려드립니다.<br/>
+            개인을 식별할 수 있는 개인정보는 수집되지 않습니다.<br/>>
+            로그인 또한 포털에 직접 하는 것으로, 로그인 정보가 따로 수집되지 않습니다. <br/>
+            로그인 버튼을 누르시면 위 사항에 동의한 것으로 간주합니다.</p>
+    </div>
+    {% include "footer.html" %}
+</body>
+</html>
