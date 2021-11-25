@@ -11,3 +11,5 @@ data/
 .idea/
 
 venv/
+
+*.pem

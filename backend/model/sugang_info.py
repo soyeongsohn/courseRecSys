@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 import pandas as pd
+from time import sleep
 import os
 from db.db_connection.connection import sql_conn
 
@@ -33,14 +34,15 @@ def login(username, password):
     driver.find_element_by_name("pwd").clear()
     driver.find_element_by_name("pwd").send_keys(password)
     login_button.click()
+    sleep(0.3)
     try:
         alert = driver.switch_to.alert
         alert.accept()
         return False
-    except UnexpectedAlertPresentException:
-        return False
     except NoAlertPresentException:
         return True
+    except UnexpectedAlertPresentException:
+        return False
 
 
 def logout():

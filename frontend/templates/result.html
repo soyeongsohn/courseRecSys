@@ -8,9 +8,13 @@
     <title>result</title>
 </head>
 <body>
-{% for table in tables %}
-            {{titles[loop.index]}}
-            {{ table|safe }}
-{% endfor %}
+    {% include "navbar.html" %}
+    <div class="df">
+    {% for table in tables %}
+                {{titles[loop.index]}}
+                {{ table|safe }}
+    {% endfor %}
+    </div>
+    {% include "footer.html" %}
 </body>
 </html>

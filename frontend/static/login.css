@@ -2,7 +2,8 @@ body{
     overflow: hidden;
     height: 100vh;
     width: 100vw;
-
+    font-family: 'NanumSquare', sans-serif;
+    font-weight: 400;
 }
 
 .container {
@@ -58,14 +59,37 @@ body{
     color: #046B40;
     font-size: 12vh;
 }
+
 .form-group {
-    padding: 1vh;
+    display: block;
+    width: 19.93vw;
+    padding: 0.5vh;
 }
-.form-group span {
+
+.textbox {
+    text-align: center;
+    margin-bottom: 3vh;
+}
+
+.howto {
+    font-size: 2.5vh;
+    font-weight: 700;
+}
+
+.howto a {
+    text-decoration: underline;
+    text-underline-position: under;
+    font-weight: 900;
+}
+
+.form-group label {
     font-family: 'NanumSquare', sans-serif;
     font-weight: 400;
-    font-size: 2.5vh;
+    font-size: 2.2vh;
     
+}
+form {
+    display: inline-block;
 }
 input {
     width: 15vw;
@@ -73,17 +97,31 @@ input {
     margin-top: 1vh;
     margin-bottom: 2vh;
 }
-.btn-primary {
+
+input[name="username"] {
+    margin-left: 0.8215vw;
+}
+
+#submitBtn {
     font-family:'NanumSquareRound', sans-serif;
     font-weight: 700;
-    font-size: 2.5vh;
-    width: 5vw;
+    font-size: 2.3vh;
+    color: #FFFFFF;
+    width: 20vw;
     height: 4vh;
-    margin-left: 0.5vw;
-    border-radius: 1vh;
-    border-color: #7F7F7F;
-    background-color: #F2F2F2;
+    display: block;
+    margin: 4vh auto 0 auto;
+    border-radius: 2vh;
+    border: none;
+    outline: none;
+    background-color: #046B40;
 }
+
+#submitBtn:hover {
+    box-shadow: 0.2vh 0.2vh #D3D3D3;
+    cursor:pointer;
+}
+
 .right-box {
     position: absolute;
     display: flex;
@@ -96,16 +134,18 @@ input {
     padding-right: 1.596vw;
     margin-left: 60vw;
 }
+
+.login-box {
+    width: 21vw;
+    height: auto;
+    text-align: center;
+}
+
 .notice {
     position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    margin-left: 43vw;
-    margin-top: 67vh;
+    margin-top: 50vh;
     font-size: 1.3vh;
+    height: auto;
+    width: auto;
+}
 
-}
-.notice strong {
-    font-size: 2vh;
-}
