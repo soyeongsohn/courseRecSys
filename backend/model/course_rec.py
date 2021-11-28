@@ -50,8 +50,7 @@ def final_result():
     review_df.loc[review_df.title.isin(df.title)]
     final_df = df.merge(review_df, on="title", how="inner")
     final_df.sort_values(by="final_score", ascending=False, inplace=True)
-    final_df.rename(columns={'title': '강의명', 'profname': '교수명', 'domain': '영역', 'field': '학문분야',
-                             'grade': '학점', 'homework': '과제', 'teamwork': '팀플', 'exam_time': '시험 횟수',
-                             'avg_rate': '평점'}, inplace=True)
+    final_df.rename(columns={'title': '강의명', 'profname': '교수명', 'domain': '영역', 'field': '학문분야', 'grade': '학점',
+                             'homework': '과제', 'teamwork': '팀플', 'exam_time': '시험 횟수'}, inplace=True)
 
-    return final_df[['강의명', '교수명', '영역', '학문분야', '학점', '과제', '팀플', '시험 횟수', '평점']][:4]
+    return final_df[['강의명', '교수명', '영역', '학문분야', '학점', '과제', '팀플', '시험 횟수']][:4]
