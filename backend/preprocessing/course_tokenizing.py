@@ -1,5 +1,5 @@
 import re
-from konlpy.tag import Mecab
+from eunjeon import Mecab
 from gensim import models
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
