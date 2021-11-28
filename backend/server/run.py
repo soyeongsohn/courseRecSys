@@ -1,9 +1,8 @@
 from flask import Flask, request, render_template, url_for, flash
 from forms import UserLoginForm
 from werkzeug.utils import redirect
-from selenium.common.exceptions import UnexpectedAlertPresentException
 from model.sugang_info import login, logout
-from model.course_rec import top_n
+from model.course_rec import final_result
 import os
 
 
@@ -17,6 +16,12 @@ app.config['SECRET_KEY'] = "../../secret_key.txt"
 @app.route('/', methods=['GET'])
 def home(name=None):
     return render_template('index.html', name=name)
+
+
+@app.route('/', methods=['GET'])
+def do_logout():
+    logout()
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -35,19 +40,11 @@ def do_login():
     return render_template('login.html', form=form)
 
 
-"""
-해야할 일
-1. 로그인 중 로딩 페이지 뜨게 만들기
-2. 로그인 실패 시 알림창 뜨게 만들기
-3. 결과 페이지에 나가기 버튼 만들고, 나가기 버튼 누르면 로그아웃 함수 실행하고, 페이지 닫게 만들어보기
-"""
-
-
 @app.route('/result', methods=['GET'])
 def result(name=None):
     # 결과 어떻게 출력할건지?
-    df = top_n()
-    return render_template('result.html', name=name, tables=[df.to_html(classes='data')],  titles=df.columns.values)
+    df = final_result()
+    return render_template('result.html', name=name, tables=[df.to_html(classes='data', index=False).replace('text-align: right;', 'text-align: center;')],  titles=None)
 
 
 if __name__ == "__main__":

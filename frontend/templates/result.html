@@ -9,11 +9,17 @@
 </head>
 <body>
     {% include "navbar.html" %}
-    <div class="df">
-    {% for table in tables %}
-                {{titles[loop.index]}}
-                {{ table|safe }}
-    {% endfor %}
+    <div class="container">
+        <div class="logoutBtn" style="cursor:pointer" onclick="window.location.href={{ url_for('do_logout') }};">
+                <a href="{{ url_for('do_logout') }}">로그아웃</a>
+            </div>
+        <h1><strong>심</strong><span>(교)</span><strong>봤다!</strong>: 당신을 위한 심교 과목을 추천합니다.</h1>
+        <div class="data">
+        {% for table in tables %}
+                    {{titles[loop.index]}}
+                    {{ table|safe }}
+        {% endfor %}
+        </div>
     </div>
     {% include "footer.html" %}
 </body>
