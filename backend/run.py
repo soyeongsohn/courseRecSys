@@ -42,10 +42,9 @@ def do_login():
 
 @app.route('/result', methods=['GET'])
 def result(name=None):
-    # 결과 어떻게 출력할건지?
     df = final_result()
     return render_template('result.html', name=name, tables=[df.to_html(classes='data', index=False).replace('text-align: right;', 'text-align: center;')],  titles=None)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=False, host='0.0.0.0')
