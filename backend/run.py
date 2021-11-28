@@ -1,16 +1,16 @@
 from flask import Flask, request, render_template, url_for, flash
-from forms import UserLoginForm
+from server.forms import UserLoginForm
 from werkzeug.utils import redirect
 from model.sugang_info import login, logout
 from model.course_rec import final_result
 import os
 
 
-template_path = os.path.abspath('../../frontend/templates')
-static_path = os.path.abspath('../../frontend/static')
+template_path = os.path.abspath('../frontend/templates')
+static_path = os.path.abspath('../frontend/static')
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
-app.config['SECRET_KEY'] = "../../secret_key.txt"
+app.config['SECRET_KEY'] = "../secret_key.txt"
 
 
 @app.route('/', methods=['GET'])
