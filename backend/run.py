@@ -43,7 +43,10 @@ def do_login():
 @app.route('/result', methods=['GET'])
 def result(name=None):
     df = final_result()
-    return render_template('result.html', name=name, tables=[df.to_html(classes='data', index=False).replace('text-align: right;', 'text-align: center;')],  titles=None)
+    if df is not None:
+        return render_template('result.html', name=name, tables=[df.to_html(classes='data', index=False).replace('text-align: right;', 'text-align: center;')],  titles=None)
+    else:
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

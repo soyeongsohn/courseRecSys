@@ -18,7 +18,8 @@ def get_driver():
     options = ChromeOptions()
     options.add_argument("--incognito")
     options.add_argument("headless")
-    options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+    options.add_argument(
+        'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
     driver = Chrome(ChromeDriverManager().install(), options=options)
     return driver
 
@@ -50,7 +51,7 @@ def logout():
     return True
 
 
-def grade_converter(grade): # 학점을 숫자로 변환
+def grade_converter(grade):  # 학점을 숫자로 변환
     if grade == 'A+':
         return 4.5
     elif grade == 'A':
@@ -69,7 +70,7 @@ def grade_converter(grade): # 학점을 숫자로 변환
         return 1.0
     elif grade == 'F':
         return 0.0
-    elif grade == 'P': # 패논패 과목의 pass는 A+과 같게 평가 (패논패는 대체로 꿀과목이므로)
+    elif grade == 'P':  # 패논패 과목의 pass는 A+과 같게 평가 (패논패는 대체로 꿀과목이므로)
         return 4.5
     else:
         return 0.0
@@ -96,6 +97,8 @@ def get_data():
                 title = re.findall(
                     r'<td aria-describedby="gridRegisteredCredits_cors_nm" role="gridcell" style="text-align:left;" title="([\w\W]+?)">',
                     str(table[i]))[0]
+                if title == "심교":  # 학점 인정 과목
+                    continue
                 courseno = re.findall(
                     r'<td aria-describedby="gridRegisteredCredits_haksu_id" role="gridcell" style="text-align:center;" title="([\w\W]+?)">',
                     str(table[i]))[0]
@@ -128,7 +131,9 @@ def load_to_db(data):
 
 def get_sugang_info():
     data = get_data()
-    df = to_df(data)
-    load_to_db(data)
-
-    return df[['title', 'grade']] # 추천모델에서 사용하는 열만 리턴
+    if len(data) != 0:
+        df = to_df(data)
+        load_to_db(data)
+        return df[['title', 'grade']]  # 추천모델에서 사용하는 열만 리턴
+    else:
+        return None
