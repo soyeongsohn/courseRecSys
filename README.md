@@ -80,5 +80,5 @@ content-based filtering이 갖고 있는 "cold-start problem"이 없다는 장�
 
 #### 역할
 손소영(soyeongsohn) - 데이터 수집, DB 구축, 데이터 전처리(과목 해설), 모델 구축, 웹 프로토타입 개발 <br/>
-최은서(eunseo4068) - 데이터 전처리 (리뷰), 모델 구축
+최은서(eunseo4068) - 데이터 전처리 (리뷰), 모델 구축 <br/>
 신다혜(s2dahye) - 프론트엔드 디자인
