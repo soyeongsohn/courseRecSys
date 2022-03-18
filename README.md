@@ -1,4 +1,3 @@
-# Kuggle Project Team 4
 ## 건국대학교 교양 과목 추천 시스템(Recommendation system of elective courses in Konkuk university)
 진행 기간: 2021.9.7 ~ 2021.11.30
 
