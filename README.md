@@ -5,10 +5,10 @@
 ![image](https://user-images.githubusercontent.com/60024018/159043939-5c47ebcd-3ef7-4edf-bc89-9121c74eac6b.png)
 
 ### 개발 프로세스
-step 1. 데이터 수집 및 DB 구축
-step 2. 데이터 전처리
-step 3. 모델 구축
-step 4. 웹 프로토타입 개발
+__step 1. 데이터 수집 및 DB 구축<br/>
+step 2. 데이터 전처리<br/>
+step 3. 모델 구축<br/>
+step 4. 웹 프로토타입 개발__
 
 #### 1. 데이터 수집 및 DB 구축
 1\) 데이터 수집 - __동적/정적 크롤링__ 사용<br/>
@@ -29,28 +29,28 @@ step 4. 웹 프로토타입 개발
 
 #### 2. 데이터 전처리 (_./backend/preprocessing/_)
 1\) 과목 정보 <br/>
-step 1. 대분류 결측치 처리 (_./course_classification.py_) <br/>
+__step 1. 대분류 결측치 처리 (_./course_classification.py_)__ <br/>
 \- 정규표현식을 통한 전처리 <br/>
 \- fasttext로 bi-gram 지도학습 진행 <br/>
-step 2. 과목 해설 토큰화 (_./course_tokenizing.py_) <br/>
+__step 2. 과목 해설 토큰화 (_./course_tokenizing.py_)__ <br/>
 \- konlpy의 Mecab을 사용하여 명사만 추출한 후 토큰화 <br/>
 \- fasttext pre-trained 모델을 불러와서 벡터화 <br/>
-step 3. 코사인 유사도 산출 (_./course_tokenizing.py_) <br/>
+__step 3. 코사인 유사도 산출 (_./course_tokenizing.py_)__ <br/>
 \- 벡터화까지 끝마친 과목 해설을 바탕으로 코사인 유사도 계산 <br/>
 \- numpy 배열로 형변환하여 element-wise 연산이 가능하게 함으로써 연산 속도를 높임 <br/>
 \- 모델에 적용 시 로딩 속도를 빠르게 하기 위해서 파일로 저장 <br/>
 
 2\) 에타 리뷰 <br/>
-step 1. 리뷰 전처리 (_./review_pos_neg.py_) <br/>
+__step 1. 리뷰 전처리 (_./review_pos_neg.py_)__ <br/>
 \- 정규표현식을 통한 전처리 <br/>
-step 2. 리뷰 토큰화 (_./review_pos_neg.py_) <br/>
+__step 2. 리뷰 토큰화 (_./review_pos_neg.py_)__ <br/>
 \- konlpy의 Mecab을 사용하여 품사 태깅 후 조사와 같은 불필요한 품사는 제거한 후 bi-gram 산출 <br/>
-step 3. 감성사전 구축 (_./review_pos_neg.py_) <br/>
+__step 3. 감성사전 구축 (_./review_pos_neg.py_)__ <br/>
 \- Logistic Regression을 이용해 리뷰에서 가장 많이 사용된 단어를 긍정/부정 별로 150개 씩 산출 <br/>
-step 4. 과목 별 긍부정 점수 산출 (_./review_sent_scoring.py_) <br/>
+__step 4. 과목 별 긍부정 점수 산출 (_./review_sent_scoring.py_)__ <br/>
 \- 전체 리뷰를 tf-idf matrix로 변환한 후 step 3에서 구축한 감성 사전을 활용하여 전체 리뷰에 대해 감성 점수 산출 <br/>
   감성점수 = (긍정 점수 - 부정 점수) / (긍정 점수 + 부정 점수) <br/>
-step 5. 객관식 리뷰로 가중치 부여 (_./review_detailed_scoring.py_) <br/>
+__step 5. 객관식 리뷰로 가중치 부여 (_./review_detailed_scoring.py_)__ <br/>
 \- 각 범주 별로 0 ~ 5 사이의 숫자로 인코딩 <br/>
 \- 학점 * 0.4 + 팀플 * 0.3 + 과제 * 0.2 + 시험 횟수 * 0.1 <br/>
 ** 가중치는 중요성을 임의로 판단하여 부여하였음 <br/>
