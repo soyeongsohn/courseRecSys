@@ -35,7 +35,7 @@ JPype1 @ file:///YourFilePath
 jsonschema==4.2.1
 konlpy==0.5.2
 lxml>=4.6.4
-Mako==1.1.5
+Mako==1.2.2
 MarkupSafe==2.0.1
 mecab==0.996.3
 mecab-python @ file:///YourFilePath
